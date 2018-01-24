@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Семен Скрябин](https://up.htmlacademy.ru/javascript/12/user/634193).
-* Наставник: `Неизвестно`.
+* Наставник: Руфат Хасларов (https://htmlacademy.ru/profile/id372587).
 
 ---
 
