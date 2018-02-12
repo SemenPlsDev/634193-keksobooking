@@ -20,9 +20,10 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-
+var markers = [{}];
 // Массив из объектов
-var markers = [
+for (var i = 0; i <= 7; i++){
+markers[i] =
   {
     author: {
       avatar: 'img/avatars/user' + getRandomValue(USERS) + '.png',
@@ -47,7 +48,8 @@ var markers = [
       y: getRandomInt(150, 501)
     }
   }
-];
+
+};
 
 
 // У блока .map убираем класс .map-faded
