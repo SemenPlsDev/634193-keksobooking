@@ -5,7 +5,7 @@ var TITLE = ['Большая уютная квартира', 'Маленькая
 var TYPE = ['flat', 'house', 'bungalo'];
 var TIME = ['12:00', '13:00', '14:00'];
 var FEAT = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var USERS = ['01', '02', '03', '04', '05', '06', '07', '08'];
+var USERS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 
 // Функция генерации случайных данных
@@ -16,40 +16,43 @@ var getRandomValue = function (arr) {
 
 
 // Возвращает случайное целое число между min (включительно) и max (не включая max)
-function getRandomInt(min, max) {
+var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
-}
-
-var markers = [{}];
-// Массив из объектов
-for (var i = 0; i <= 7; i++){
-markers[i] =
-  {
-    author: {
-      avatar: 'img/avatars/user' + getRandomValue(USERS) + '.png',
-    },
-
-    offer: {
-      title: getRandomValue(TITLE),
-      address: 'location.x, location.y',
-      priсe: getRandomInt(1000, 1000001),
-      type: getRandomValue(TYPE),
-      rooms: getRandomInt(1, 6),
-      guests: getRandomInt(1, 9),
-      checkin: getRandomValue(TIME),
-      checkout: getRandomValue(TIME),
-      features: getRandomValue(FEAT),
-      description: '',
-      photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
-    },
-
-    location: {
-      x: getRandomInt(300, 901),
-      y: getRandomInt(150, 501)
-    }
-  }
-
 };
+
+var markers = [];
+// Массив из объектов
+for (var i = 0; i <= 7; i++) {
+  var x = getRandomInt(300, 901);
+  var y = getRandomInt(150, 501);
+
+  markers.push(
+      {
+        author: {
+          avatar: 'img/avatars/user' + '0' + getRandomValue(USERS) + '.png',
+        },
+
+        offer: {
+          title: getRandomValue(TITLE),
+          address: 'location.x, location.y',
+          priсe: getRandomInt(1000, 1000001),
+          type: getRandomValue(TYPE),
+          rooms: getRandomInt(1, 6),
+          guests: getRandomInt(1, 9),
+          checkin: getRandomValue(TIME),
+          checkout: getRandomValue(TIME),
+          features: getRandomValue(FEAT),
+          description: '',
+          photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
+        },
+
+        location: {
+          x: x,
+          y: y
+        }
+      });
+
+}
 
 
 // У блока .map убираем класс .map-faded
@@ -58,9 +61,9 @@ userDialog.classList.remove('map--faded');
 
 
 // Находим нужные элементы через querySelect
-var Pins = userDialog.querySelector('.map__pins');
+var pins = userDialog.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
-var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card popup');
+var mapCardTemplate = document.querySelector('template').content.getElementById('.map__card popup');
 
 
 // Функи=ция создания DOM-элементов
@@ -78,15 +81,15 @@ var createMapMarker = function (marker) {
 var generateMapMarkers = function () {
   var fragment = document.createDocumentFragment();
 
-  for (var i = 0; i < markers.length; i++) {
-    fragment.appendChild(createMapMarker(markers[i]));
+  for (var a = 0; a < markers.length; a++) {
+    fragment.appendChild(createMapMarker(markers[a]));
   }
-  return Pins.appendChild(fragment);
+  return pins.appendChild(fragment);
 };
 
 
 // Вызываем функцию отрицовки
-generateMapMarkers(markers, Pins);
+generateMapMarkers(markers, pins);
 
 
 // Create Map Card
@@ -99,12 +102,12 @@ var createMapCard = function (post) {
 
   mapCardElement.querySelector('h3').textContent = post.offer.title;
   mapCardElement.querySelector('h3 + p > small').textContent = post.offer.address;
-  mapCardElement.querySelector('.popup__price').innerHTML = post.offer.price + '&#x20bd;/ночь';
+  mapCardElement.querySelector('.popup__price').textContent = post.offer.price + '&#x20bd;/ночь';
   mapCardElement.querySelector('h4').textContent = post.offer.type;
   mapCardElement.querySelector('h4 + p').textContent = post.offer.rooms + ' для ' + post.offer.guests + ' гостей';
   mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + post.offer.checkin + ' , выезд до ' + post.offer.checkout;
 
-  for (var i = 0; i < post.offer.features.length; i++) {
+  for (var j = 0; j < post.offer.features.length; j++) {
     featuresContainer.innerHTML += '<li class="feature feature--' + post.offer.features[i] + '"></li>';
   }
   mapCardElement.querySelector('.popup__features + p').textContent = post.offer.description;
@@ -116,12 +119,12 @@ var createMapCard = function (post) {
 // Output Map Card
 var outputMapCard = function () {
   var mapCardFragment = document.createDocumentFragment();
-  for (var i = 0; i < markers.length; i++) {
+  for (var k = 0; k < markers.length; k++) {
     mapCardFragment.appendChild(createMapCard(markers[i]));
   }
-  var eto = document.querySelector('.map');
+  var statement = document.querySelector('.map');
 
-  return eto.insertBefore(mapCardFragment, eto.querySelector('.map__filters-container'));
+  return statement.insertBefore(mapCardFragment, statement.querySelector('.map__filters-container'));
 };
 
 outputMapCard(markers);
