@@ -20,6 +20,7 @@ var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
+
 var markers = [];
 // Массив из объектов
 for (var i = 0; i <= 7; i++) {
@@ -34,8 +35,8 @@ for (var i = 0; i <= 7; i++) {
 
         offer: {
           title: getRandomValue(TITLE),
-          address: 'location.x, location.y',
-          priсe: getRandomInt(1000, 1000001),
+          address: 'location.x location.y',
+          priсe: getRandomInt(10000, 1000001),
           type: getRandomValue(TYPE),
           rooms: getRandomInt(1, 6),
           guests: getRandomInt(1, 9),
@@ -63,7 +64,7 @@ userDialog.classList.remove('map--faded');
 // Находим нужные элементы через querySelect
 var pins = userDialog.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
-var mapCardTemplate = document.querySelector('template').content.getElementById('.map__card popup');
+var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 
 
 // Функи=ция создания DOM-элементов
@@ -98,11 +99,11 @@ var createMapCard = function (post) {
 
   // Features popup
   var featuresContainer = mapCardElement.querySelector('.popup__features');
-  featuresContainer.innerHTML = '';
+  featuresContainer.textContent = '';
 
   mapCardElement.querySelector('h3').textContent = post.offer.title;
   mapCardElement.querySelector('h3 + p > small').textContent = post.offer.address;
-  mapCardElement.querySelector('.popup__price').textContent = post.offer.price + '&#x20bd;/ночь';
+  mapCardElement.querySelector('.popup__price').textContent =  post.offer.price + '&#x20bd;/ночь';
   mapCardElement.querySelector('h4').textContent = post.offer.type;
   mapCardElement.querySelector('h4 + p').textContent = post.offer.rooms + ' для ' + post.offer.guests + ' гостей';
   mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + post.offer.checkin + ' , выезд до ' + post.offer.checkout;
@@ -119,12 +120,12 @@ var createMapCard = function (post) {
 // Output Map Card
 var outputMapCard = function () {
   var mapCardFragment = document.createDocumentFragment();
-  for (var k = 0; k < markers.length; k++) {
-    mapCardFragment.appendChild(createMapCard(markers[i]));
-  }
-  var statement = document.querySelector('.map');
 
-  return statement.insertBefore(mapCardFragment, statement.querySelector('.map__filters-container'));
+  mapCardFragment.appendChild(createMapCard(markers[0]));
+
+  //var statement = document.querySelector('.map');
+
+  return userDialog.insertBefore(mapCardFragment, userDialog.querySelector('.map__filters-container'));
 };
 
 outputMapCard(markers);
