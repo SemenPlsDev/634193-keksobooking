@@ -21,6 +21,13 @@ var getRandomInt = function (min, max) {
 };
 
 
+// функция генерации случайной длины массива
+var getRandomLength = function (array) {
+  var randomLenght = getRandomInt(1, array.length);
+  return array.slice(0, randomLenght);
+};
+
+
 var markers = [];
 // Массив из объектов
 for (var i = 0; i <= 7; i++) {
@@ -35,14 +42,14 @@ for (var i = 0; i <= 7; i++) {
 
         offer: {
           title: getRandomValue(TITLE),
-          address: 'location.x location.y',
+          address: x + ' ' + y,
           priсe: getRandomInt(10000, 1000001),
           type: getRandomValue(TYPE),
           rooms: getRandomInt(1, 6),
           guests: getRandomInt(1, 9),
           checkin: getRandomValue(TIME),
           checkout: getRandomValue(TIME),
-          features: getRandomValue(FEAT),
+          features: getRandomLength(FEAT),
           description: '',
           photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
         },
@@ -103,7 +110,7 @@ var createMapCard = function (post) {
 
   mapCardElement.querySelector('h3').textContent = post.offer.title;
   mapCardElement.querySelector('h3 + p > small').textContent = post.offer.address;
-  mapCardElement.querySelector('.popup__price').textContent =  post.offer.price + '&#x20bd;/ночь';
+  mapCardElement.querySelector('.popup__price').textContent = post.offer.price + '&#x20bd;/ночь';
   mapCardElement.querySelector('h4').textContent = post.offer.type;
   mapCardElement.querySelector('h4 + p').textContent = post.offer.rooms + ' для ' + post.offer.guests + ' гостей';
   mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + post.offer.checkin + ' , выезд до ' + post.offer.checkout;
@@ -123,9 +130,9 @@ var outputMapCard = function () {
 
   mapCardFragment.appendChild(createMapCard(markers[0]));
 
-  //var statement = document.querySelector('.map');
+  var statement = document.querySelector('.map');
 
-  return userDialog.insertBefore(mapCardFragment, userDialog.querySelector('.map__filters-container'));
+  return statement.insertBefore(mapCardFragment, statement.querySelector('.map__filters-container'));
 };
 
 outputMapCard(markers);
