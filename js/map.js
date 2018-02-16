@@ -9,7 +9,7 @@ var USERS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 
 // ФУНЦИИ
-  // Функция генерации случайных данных
+// Функция генерации случайных данных
 var getRandomValue = function (arr) {
   var rand = Math.floor(Math.random() * arr.length);
   return arr[rand];
@@ -44,7 +44,7 @@ var getKey = function (key) {
 // ОБЪЯВЛЯЕМ МАССИВ
 var markers = [];
 
-  // С помощью цикла сгенерировать в массив 8 объектов
+// С помощью цикла сгенерировать в массив 8 объектов
 for (var i = 0; i <= 7; i++) {
 
   // Получить случайные значения для Х и Y
@@ -82,21 +82,21 @@ for (var i = 0; i <= 7; i++) {
 
 // РАБОТА С DOM-ДЕРЕВОМ
 // ГЕНЕРАЦИЯ МЕТОК
-  // У блока .map убираем класс .map-faded
+// У блока .map убираем класс .map-faded
 var userDialog = document.querySelector('.map');
 userDialog.classList.remove('map--faded');
 
-  // Находим нужные элементы через querySelector
+// Находим нужные элементы через querySelector
 var pins = userDialog.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 
-  // Находим постоянные для метки
+// Находим постоянные для метки
 var pinElem = pinTemplate.querySelector('img');
-var MAP_MARKER_WIDTH = pinElem.getAttribute('width') / 2;  //Ищем по атрибуту
+var MAP_MARKER_WIDTH = pinElem.getAttribute('width') / 2; // Ищем по атрибуту
 var MAP_MARKER_HEIGHT = parseFloat(pinElem.getAttribute('height'));
 
-  // Шаблон функцию для заполнения блока DOM-элементами на основе массива JS-объектов
+// Шаблон функцию для заполнения блока DOM-элементами на основе массива JS-объектов
 var createMapMarker = function (marker) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = marker.location.x - MAP_MARKER_HEIGHT + 'px';
@@ -120,7 +120,7 @@ generateMapMarkers(markers);
 
 
 // БЛАНК ОБЪЯВЛЕНИЯ
-  // Шаблон функцию для заполнения блока DOM-элементами на основе массива JS-объектов
+// Шаблон функцию для заполнения блока DOM-элементами на основе массива JS-объектов
 var createMapCard = function (post) {
   var mapCardElement = mapCardTemplate.cloneNode(true);
 
@@ -155,7 +155,7 @@ var outputMapCard = function () {
   return statement.insertBefore(mapCardFragment, statement.querySelector('.map__filters-container'));
 };
 
- // Вызываем функцию отрицовки бланка
+// Вызываем функцию отрицовки бланка
 outputMapCard(markers);
 
 
