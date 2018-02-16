@@ -55,13 +55,13 @@ for (var i = 0; i <= 7; i++) {
   markers.push(
       {
         author: {
-          avatar: 'img/avatars/user' + '0' + getRandomValue(USERS) + '.png',
+          avatar: 'img/avatars/user' + '0' + USERS[0 + i] + '.png',
         },
 
         offer: {
           title: getRandomValue(TITLE),
           address: x + ' ' + y,
-          priсe: getRandomInt(10000, 1000001),
+          price: getRandomInt(10000, 1000001),
           type: getRandomValue(TYPE),
           rooms: getRandomInt(1, 6),
           guests: getRandomInt(1, 9),
@@ -130,7 +130,7 @@ var createMapCard = function (post) {
 
   mapCardElement.querySelector('h3').textContent = post.offer.title;
   mapCardElement.querySelector('h3 + p > small').textContent = post.offer.address;
-  mapCardElement.querySelector('.popup__price').textContent = post.offer.price + '₽/ночь';
+  mapCardElement.querySelector('.popup__price').textContent = post.offer.price + ' ₽/ночь';
   mapCardElement.querySelector('h4').textContent = getKey(post.offer.type);
   mapCardElement.querySelector('h4 + p').textContent = post.offer.rooms + ' для ' + post.offer.guests + ' гостей';
   mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + post.offer.checkin + ' , выезд до ' + post.offer.checkout;
