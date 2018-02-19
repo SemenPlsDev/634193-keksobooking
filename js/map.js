@@ -1,3 +1,4 @@
+
 'use strict';
 
 // Объявляем переменные
@@ -84,7 +85,6 @@ for (var i = 0; i <= 7; i++) {
 // ГЕНЕРАЦИЯ МЕТОК
 // У блока .map убираем класс .map-faded
 var userDialog = document.querySelector('.map');
-userDialog.classList.remove('map--faded');
 
 // Находим нужные элементы через querySelector
 var pins = userDialog.querySelector('.map__pins');
@@ -97,44 +97,39 @@ var MAP_MARKER_WIDTH = pinElem.getAttribute('width') / 2; // Ищем по ат�
 var MAP_MARKER_HEIGHT = parseFloat(pinElem.getAttribute('height'));
 
 // Шаблон функцию для заполнения блока DOM-элементами на основе массива JS-объектов
-var createMapMarker = function (marker) {
+var createMapMarker = function (marker, index) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = marker.location.x - MAP_MARKER_HEIGHT + 'px';
   pinElement.style.top = marker.location.y - MAP_MARKER_WIDTH + 'px';
   pinElement.querySelector('img').src = marker.author.avatar;
+  pinElement.dataset.markerIndex = index; // добавляем свойство к эоементу для нахождения ее в делегировании
   return pinElement;
 };
 
-  // функцию создания DOM-элемента на основе JS-объекта(с помощью ObjectFragment)
+// функцию создания DOM-элемента на основе JS-объекта(с помощью ObjectFragment)
 var generateMapMarkers = function () {
   var fragment = document.createDocumentFragment();
-
   for (var a = 0; a < markers.length; a++) {
-    fragment.appendChild(createMapMarker(markers[a]));
+    fragment.appendChild(createMapMarker(markers[a], a));
   }
   return pins.appendChild(fragment);
 };
 
-  // Вызываем функцию отрицовки
-generateMapMarkers(markers);
 
 
 // БЛАНК ОБЪЯВЛЕНИЯ
 // Шаблон функцию для заполнения блока DOM-элементами на основе массива JS-объектов
 var createMapCard = function (post) {
   var mapCardElement = mapCardTemplate.cloneNode(true);
-
   // Features popup
   var featuresContainer = mapCardElement.querySelector('.popup__features');
   featuresContainer.textContent = '';
-
   mapCardElement.querySelector('h3').textContent = post.offer.title;
   mapCardElement.querySelector('h3 + p > small').textContent = post.offer.address;
   mapCardElement.querySelector('.popup__price').textContent = post.offer.price + ' ₽/ночь';
   mapCardElement.querySelector('h4').textContent = getKey(post.offer.type);
   mapCardElement.querySelector('h4 + p').textContent = post.offer.rooms + ' для ' + post.offer.guests + ' гостей';
   mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + post.offer.checkin + ' , выезд до ' + post.offer.checkout;
-
   for (var j = 0; j < post.offer.features.length; j++) {
     featuresContainer.innerHTML += '<li class="feature feature--' + post.offer.features[j] + '"></li>';
   }
@@ -144,18 +139,34 @@ var createMapCard = function (post) {
   return mapCardElement;
 };
 
-  // функцию создания DOM-элемента на основе JS-объекта(с помощью ObjectFragment)
-var outputMapCard = function () {
+// функцию создания DOM-элемента на основе JS-объекта(с помощью ObjectFragment)
+var outputMapCard = function (name) {
   var mapCardFragment = document.createDocumentFragment();
-
-  mapCardFragment.appendChild(createMapCard(markers[0])); // Используем только первый объект массива
-
+  mapCardFragment.appendChild(createMapCard(name)); //Отрицует обьявление исходя из индекса массива(объекта объявления)
   var statement = document.querySelector('.map');
-
   return statement.insertBefore(mapCardFragment, statement.querySelector('.map__filters-container'));
 };
 
-// Вызываем функцию отрицовки бланка
-outputMapCard(markers);
 
 
+// Функция для обработичка события
+var onEventMouseUp = function () {
+  userDialog.classList.remove('map--faded');
+  generateMapMarkers();
+
+  // Заполнение адреса формы
+  document.querySelector('#address').value = (MAP_MARKER_WIDTH + ', ' + MAP_MARKER_HEIGHT);
+  document.querySelector('#address').setAttribute('disabled', 'disabled'); // Запрет редактирования поля формы
+};
+
+// Функция для обработичка события
+var onEventClick = function (evt) {
+  if (evt.target.classList.contains('map__pin') && !evt.target.classList.contains('map__pin--main')) {
+    var markerIndex = evt.target.dataset.markerIndex;
+    outputMapCard(markers[markerIndex]);
+  }
+};
+
+// Добавляем слушателей события
+userDialog.addEventListener('mouseup', onEventMouseUp);
+userDialog.addEventListener('click',  onEventClick);
