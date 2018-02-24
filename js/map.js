@@ -100,6 +100,7 @@ var MAP_MARKER_HEIGHT = parseFloat(pinElem.getAttribute('height'));
 // Функция, которая убирает скрытость с карты
 var showMap = function () {
   document.querySelector('.map').classList.toggle('map--faded', false);
+  document.querySelector('.notice__form').classList.toggle('notice__form--disabled', false);
   removeDisabled();
 };
 
@@ -206,12 +207,33 @@ var generateMapCard = function (post) {
     var myFeatures = document.createElement('li');
 
     featureTemplate.appendChild(myFeatures);
+
+
     myFeatures.className = 'feature feature--' + post.offer.features[j];
+
+
+
+//document.getElementById('article').innerHTML = ArrayInput.length
+    //
+// ЗДЕСЬ
+
+var popup_close = document.querySelector('button.popup__close');
+
+    var onMapCardClose = function () {
+      var ww = document.querySelector('article.map__card.popup');
+
+     for(var t = 0; t < window.bb.length; t++){
+      document.querySelector('.map').removeChild(ww)
+      }
+    };
+    popup_close.addEventListener('click', onMapCardClose);
   }
 };
 
 
 // ________________________________________________________________________________________________________________________________________________________________
+
+
 
 var onEventMouseUp = function (evt) {
   if (evt.target.parentNode.classList.contains('map__pin--main') && document.querySelector('.map').classList.contains('map--faded')) {
@@ -221,6 +243,9 @@ var onEventMouseUp = function (evt) {
     // Заполнение инпута "адрес" при активации карты
     document.querySelector('#address').value = ((getOffsetSum(mainPin).left - MAP_MARKER_WIDTH / 2) + ', ' + (getOffsetSum(mainPin).top - MAP_MARKER_HEIGHT));
     document.querySelector('#address').setAttribute('disabled', 'disabled'); // Нельзя редактировать поле адреса
+
+
+
   }
 };
 
@@ -229,12 +254,15 @@ var onEventClick = function (evt) {
   if (evt.target.classList.contains('map__pin') && !evt.target.classList.contains('map__pin--main')) {
     var markerIndex = evt.target.dataset.markerIndex;
     generateMapCard(markers[markerIndex]);
+    window.bb = document.getElementsByTagName('article');
+    console.log(window.bb.length);
   }
 };
 
 var map = document.querySelector('.map');
 var mainPin = document.querySelector('.map__pin--main');
 var img = document.querySelector('.map__pin');
+
 
 map.addEventListener('click', onEventClick);
 map.addEventListener('mouseup', onEventMouseUp);
@@ -359,4 +387,5 @@ var validation = function () {
 
 // Слушаем события клика на элементе с классом form__submit
 document.querySelector('.form__submit').addEventListener('click', validation);
+
 
