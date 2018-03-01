@@ -1,89 +1,12 @@
-
 'use strict';
 
-// Объявляем переменные
-var MARKERS_COUNT = 8;
-var TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-var TYPE = ['flat', 'bungalo', 'house'];
-var TIME = ['12:00', '13:00', '14:00'];
-var FEAT = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var USERS = [1, 2, 3, 4, 5, 6, 7, 8];
+(function () {
+// Константы кнопок
+var ESC_KEYCODE = 27;
 
-// ________________________________________________________________________________________________________________________________________________________________
-// ФУНЦИИ
-// Функция генерации случайных данных
-var getRandomValue = function (arr) {
-  var rand = Math.floor(Math.random() * arr.length);
-  return arr[rand];
-};
 
-  // Функция возвращает случайное целое число между min (включительно) и max (не включая max)
-var getRandomInt = function (min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-};
 
-  // функция генерации случайной длины массива
-var getRandomLength = function (array) {
-  var randomLenght = getRandomInt(1, array.length);
-  return array.slice(0, randomLenght);
-};
 
-  // Частная функция которая присвоет случайному значению массива TYPE определение
-var getKey = function (key) {
-  if (key === 'flat') {
-    key = 'Квартира';
-  }
-  if (key === 'bungalo') {
-    key = 'Бунгало';
-  }
-  if (key === 'house') {
-    key = 'Дом';
-  }
-  return key;
-};
-
-// ________________________________________________________________________________________________________________________________________________________________
-// Функция генерирования обьектов
-function generateMarkers() {
-  var arrmarkers = [];
-
-  // С помощью цикла сгенерировать в массив 8 объектов
-  for (var i = 0; i < MARKERS_COUNT; i++) {
-
-  // Получить случайные значения для Х и Y
-    var x = getRandomInt(300, 901);
-    var y = getRandomInt(150, 501);
-
-    // Добавить в массив объекты
-    arrmarkers.push(
-        {
-          author: {
-            avatar: 'img/avatars/user' + '0' + USERS[i] + '.png',
-          },
-
-          offer: {
-            title: getRandomValue(TITLE),
-            address: x + ' ' + y,
-            price: getRandomInt(10000, 1000001),
-            type: getRandomValue(TYPE),
-            rooms: getRandomInt(1, 6),
-            guests: getRandomInt(1, 9),
-            checkin: getRandomValue(TIME),
-            checkout: getRandomValue(TIME),
-            features: getRandomLength(FEAT),
-            description: '',
-            photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
-          },
-
-          location: {
-            x: x,
-            y: y
-          }
-        });
-  }
-  return arrmarkers;
-}
-var markers = generateMarkers();
 
 // РАБОТА С DOM-ДЕРЕВОМ
 // ГЕНЕРАЦИЯ МЕТОК
@@ -94,12 +17,13 @@ var pins = userDialog.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 // Находим постоянные для метки
 var pinElem = pinTemplate.querySelector('img');
-var MAP_MARKER_WIDTH = pinElem.getAttribute('width') / 2; // Ищем по атрибуту
-var MAP_MARKER_HEIGHT = parseFloat(pinElem.getAttribute('height'));
+window.MAP_MARKER_WIDTH = pinElem.getAttribute('width') / 2; // Ищем по атрибуту
+window.MAP_MARKER_HEIGHT = parseFloat(pinElem.getAttribute('height'));
 
 // Функция, которая убирает скрытость с карты
 var showMap = function () {
   document.querySelector('.map').classList.toggle('map--faded', false);
+  document.querySelector('.notice__form').classList.toggle('notice__form--disabled', false);
   removeDisabled();
 };
 
@@ -128,118 +52,65 @@ var removeDisabled = function () {
 
 // ________________________________________________________________________________________________________________________________________________________________
 
-// Шаблон функцию для заполнения блока DOM-элементами на основе массива JS-объектов
-var createMapMarker = function (marker, index) {
 
-  // Находим нужные элементы через querySelector
 
-  var pinElement = pinTemplate.cloneNode(true);
-  pinElement.style.left = marker.location.x - MAP_MARKER_HEIGHT + 'px';
-  pinElement.style.top = marker.location.y - MAP_MARKER_WIDTH + 'px';
-  pinElement.querySelector('img').src = marker.author.avatar;
-  pinElement.dataset.markerIndex = index; // добавляем свойство к эоементу для нахождения ее в делегировании
-
-  document.querySelector('.map').insertBefore(pinElement, document.querySelector('.map__filters-container'));
-  // return pinElement;
-};
-
-// функцию создания DOM-элемента на основе JS-объекта(с помощью ObjectFragment)
-var generateMapMarkers = function () {
-  // var fragment = document.createDocumentFragment();
-  for (var a = 0; a < markers.length; a++) {
-    // fragment.appendChild(createMapMarker(markers[a], a));
-    createMapMarker(markers[a], a);
-  }
-  // return pins.appendChild(fragment);
+var onPinClickhandler = function (evt) {
+  var target = evt.currentTarget;
+  var offerId = target.getAttribute('data-id');
+  window.generateMapCard(window.markers[offerId]);
 };
 
 
-// Функция, которая создает объявление на основе шаблона
-var generateMapCard = function (post) {
+ //Функция отрисовки ОБЪЯЫЛЕНИЯ окна по нажатию на метку
 
-  var userDialog = document.querySelector('.map');
-  // Находим нужные элементы через querySelector
-  var pins = userDialog.querySelector('.map__pins');
-  var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
-
-  // Находим постоянные для метки
-  var pinElem = pinTemplate.querySelector('img');
-  var MAP_MARKER_WIDTH = pinElem.getAttribute('width') / 2; // Ищем по атрибуту
-  var MAP_MARKER_HEIGHT = parseFloat(pinElem.getAttribute('height'));
-
-  // Находим нужные элементы через querySelector
-  var pins = userDialog.querySelector('.map__pins');
-  var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
-  var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
-
-  var mapCardElement = mapCardTemplate.cloneNode(true);
-  document.querySelector('.map').insertBefore(mapCardElement, document.querySelector('.map__filters-container'));
-  mapCardElement.querySelector('h3').textContent = post.offer.title;
-  mapCardElement.querySelector('h3 + p > small').textContent = post.offer.address;
-  mapCardElement.querySelector('.popup__price').textContent = post.offer.price + ' ₽/ночь';
-  mapCardElement.querySelector('h4').textContent = getKey(post.offer.type);
-  mapCardElement.querySelector('h4 + p').textContent = post.offer.rooms + ' для ' + post.offer.guests + ' гостей';
-  mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + post.offer.checkin + ' , выезд до ' + post.offer.checkout;
-  mapCardElement.querySelector('.popup__avatar').src = post.author.avatar;
-
-  // Вывод картинок для объявления
-  var photoTemplate = mapCardElement.querySelector('.popup__pictures');
-  for (var i = 0; i < post.offer.photos.length; i++) {
-    var photoPromo = photoTemplate.querySelector('li').querySelector('img');
-    var photoElement = photoPromo.cloneNode(true);
-    photoElement.src = post.offer.photos[i];
-    photoElement.style.cssText = 'width:100px; height:100px;';
-    photoTemplate.querySelector('li').appendChild(photoElement);
+var openPopUp = function () {
+  var mapPin = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  for (var d = 0; d < mapPin.length; d++) {
+    mapPin[d].addEventListener('click', onPinClickhandler);
   }
+};
 
-  // Генерируем фичи
-  var featureTemplate = mapCardElement.querySelector('.popup__features');
-  var childrenFeatures = featureTemplate.querySelectorAll('li');
-
-  // Удаляем всех детей
-  for (var k = 0; k < childrenFeatures.length; k++) {
-    featureTemplate.removeChild(childrenFeatures[k]);
+/**
+ * Функция закрытия ОБЪЯВЛЕНИЯ окна при клике
+ */
+window.closePopUp = function () {
+  var card = document.querySelector('.map__card');
+  if (card) {
+    map.removeChild(card);
+    document.removeEventListener('keydown', onPopupEscPress);
+    map.removeEventListener('keydown', onPopupEscPress);
   }
-
-  // Добавляем новых детей
-  for (var j = 0; j < post.offer.features.length; j++) {
-    var myFeatures = document.createElement('li');
-
-    featureTemplate.appendChild(myFeatures);
-    myFeatures.className = 'feature feature--' + post.offer.features[j];
+};
+window.onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    window.closePopUp();
   }
 };
 
 
 // ________________________________________________________________________________________________________________________________________________________________
+
+
 
 var onEventMouseUp = function (evt) {
   if (evt.target.parentNode.classList.contains('map__pin--main') && document.querySelector('.map').classList.contains('map--faded')) {
     showMap();
-    generateMapMarkers();
-
-    // Заполнение инпута "адрес" при активации карты
-    document.querySelector('#address').value = ((getOffsetSum(mainPin).left - MAP_MARKER_WIDTH / 2) + ', ' + (getOffsetSum(mainPin).top - MAP_MARKER_HEIGHT));
+    window.generateMapMarkers();
+    openPopUp();
+   // Заполнение инпута "адрес" при активации карты
+    document.querySelector('#address').value = ((getOffsetSum(window.mainPin).left - window.MAP_MARKER_WIDTH / 2) + ', ' + (getOffsetSum(window.mainPin).top - window.MAP_MARKER_HEIGHT));
     document.querySelector('#address').setAttribute('disabled', 'disabled'); // Нельзя редактировать поле адреса
+
   }
 };
 
-// Обработчик для активации карты
-var onEventClick = function (evt) {
-  if (evt.target.classList.contains('map__pin') && !evt.target.classList.contains('map__pin--main')) {
-    var markerIndex = evt.target.dataset.markerIndex;
-    generateMapCard(markers[markerIndex]);
-  }
-};
+window.map = document.querySelector('.map');
+window.mainPin = document.querySelector('.map__pin--main');
 
-var map = document.querySelector('.map');
-var mainPin = document.querySelector('.map__pin--main');
-var img = document.querySelector('.map__pin');
+//map.addEventListener('click', onEventClick);
+window.mainPin.addEventListener('mouseup', onEventMouseUp);
 
-map.addEventListener('click', onEventClick);
-map.addEventListener('mouseup', onEventMouseUp);
 
-// ________________________________________________________________________________________________________________________________________________________________
 // Поиск координат центральной кнопки
 function getOffsetSum(elem) {
   var top = 0;
@@ -250,15 +121,11 @@ function getOffsetSum(elem) {
     elem = elem.offsetParent;
   }
   return {top: Math.round(top), left: Math.round(left)};
-}
-
-// ________________________________________________________________________________________________________________________________________________________________
-
-// Заполнение инпута "адрес" при загрузке страницы
-var writeValueAddress = function () {
-  document.querySelector('#address').value = ((getOffsetSum(mainPin).left - MAP_MARKER_WIDTH / 2) + ', ' + (getOffsetSum(mainPin).top - MAP_MARKER_HEIGHT / 2));
 };
-writeValueAddress();
 
-// ________________________________________________________________________________________________________________________________________________________________
+
+
+
+})();
+
 
