@@ -1,4 +1,3 @@
-'use strict';
 
 (function () {
 
@@ -7,18 +6,14 @@
   var MAIN_BUTTON_HEIGHT = 87;
   var LIMIT_FOR_BOTTOM = 500;
   var LIMIT_FOR_TOP = 150;
-  var map = document.querySelector('.map');
-  var mainPin = document.querySelector('.map__pin--main');
   var MAIN_BUTTON_WIDTH = 65;
   var MAIN_BUTTON_HEIGHT = 87;
   var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var pinElem = pinTemplate.querySelector('img');
-  // РАБОТА С DOM-ДЕРЕВОМ
-  // ГЕНЕРАЦИЯ МЕТОК
+  var map = document.querySelector('.map');
+  var mainPin = document.querySelector('.map__pin--main');
 
   window.MAP_MARKER_WIDTH = pinElem.getAttribute('width') / 2; // Ищем по атрибуту
-
-
   window.MAP_MARKER_HEIGHT = parseFloat(pinElem.getAttribute('height'));
 
 
